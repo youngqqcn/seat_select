@@ -5,7 +5,8 @@ let sectionData = {};
 let selectedSection = null;
 let showLabels = true;
 let svgLayer = null;
-let showSVGBackground = true;
+let showSVGBackground = true; // 默认显示SVG背景
+let svgBounds = null;
 
 // 初始化地图
 function initMap() {
@@ -28,9 +29,6 @@ function initMap() {
 
     // 加载SVG背景
     loadSVGBackground();
-
-    // 加载区域数据
-    loadSectionData();
 }
 
 // 加载SVG背景
@@ -40,6 +38,8 @@ function loadSVGBackground() {
             map.removeLayer(svgLayer);
             svgLayer = null;
         }
+        // 即使不显示SVG背景，也要加载区域数据
+        loadSectionData();
         return;
     }
 
@@ -47,21 +47,32 @@ function loadSVGBackground() {
     fetch("657537.geojson")
         .then((response) => response.json())
         .then((geojsonData) => {
+            // 解析viewBox信息
             const viewBox = geojsonData.metadata.viewBox.split(",").map(Number);
-            const bounds = L.latLngBounds(
-                [viewBox[1], viewBox[0]], // 西南角
-                [viewBox[1] + viewBox[3], viewBox[0] + viewBox[2]] // 东北角
+            // viewBox格式: [minX, minY, width, height]
+            const minX = viewBox[0];
+            const minY = viewBox[1];
+            const width = viewBox[2];
+            const height = viewBox[3];
+
+            // 设置SVG边界
+            svgBounds = L.latLngBounds(
+                [minY, minX], // 西南角
+                [minY + height, minX + width] // 东北角
             );
 
             // 创建SVG图片图层
-            svgLayer = L.imageOverlay("657537.min.svg", bounds, {
+            svgLayer = L.imageOverlay("657537.min.svg", svgBounds, {
                 opacity: 0.8,
                 interactive: false,
             }).addTo(map);
 
             // 设置地图边界
-            map.setMaxBounds(bounds);
-            map.fitBounds(bounds);
+            map.setMaxBounds(svgBounds);
+            map.fitBounds(svgBounds);
+
+            // 加载区域数据
+            loadSectionData();
         })
         .catch((error) => {
             console.error("加载SVG背景失败:", error);
@@ -90,23 +101,63 @@ function loadGeoJSON() {
     fetch("657537.geojson")
         .then((response) => response.json())
         .then((geojsonData) => {
-            // 获取视图边界（如果SVG加载失败，这里会重新设置边界）
+            // 解析viewBox信息用于坐标转换
             const viewBox = geojsonData.metadata.viewBox.split(",").map(Number);
-            const bounds = L.latLngBounds(
-                [viewBox[1], viewBox[0]], // 西南角
-                [viewBox[1] + viewBox[3], viewBox[0] + viewBox[2]] // 东北角
-            );
+            const minX = viewBox[0];
+            const minY = viewBox[1];
+            const width = viewBox[2];
+            const height = viewBox[3];
+
+            // 坐标转换函数：将相对坐标(-1到1)转换为实际坐标
+            function convertCoordinates(coords) {
+                return coords.map((coord) => {
+                    // 相对坐标范围是[-1, 1]，需要映射到实际SVG尺寸
+                    const relativeX = coord[0]; // -1到1
+                    const relativeY = coord[1]; // -1到1
+
+                    // 将相对坐标转换为实际坐标
+                    const actualX = minX + ((relativeX + 1) * width) / 2;
+                    const actualY = minY + ((1 - relativeY) * height) / 2;
+
+                    return [actualY, actualX]; // Leaflet使用[lat, lng]格式
+                });
+            }
 
             // 如果SVG背景没有加载，设置地图边界
             if (!svgLayer) {
+                const bounds = L.latLngBounds(
+                    [minY, minX], // 西南角
+                    [minY + height, minX + width] // 东北角
+                );
                 map.setMaxBounds(bounds);
                 map.fitBounds(bounds);
             }
 
-            // 创建GeoJSON图层
+            // 创建GeoJSON图层，使用转换后的坐标
             geojsonLayer = L.geoJSON(geojsonData.sources.section, {
+                pointToLayer: function (feature, latlng) {
+                    // 处理点数据
+                    return L.circleMarker(latlng);
+                },
                 style: function (feature) {
                     return getSectionStyle(feature);
+                },
+                coordsToLatLng: function (coords) {
+                    // 转换单个坐标点
+                    const relativeX = coords[0];
+                    const relativeY = coords[1];
+                    const viewBox = geojsonData.metadata.viewBox
+                        .split(",")
+                        .map(Number);
+                    const minX = viewBox[0];
+                    const minY = viewBox[1];
+                    const width = viewBox[2];
+                    const height = viewBox[3];
+
+                    const actualX = minX + ((relativeX + 1) * width) / 2;
+                    const actualY = minY + ((1 - relativeY) * height) / 2;
+
+                    return L.latLng(actualY, actualX);
                 },
                 onEachFeature: function (feature, layer) {
                     // 为每个区域添加交互
@@ -118,23 +169,35 @@ function loadGeoJSON() {
                         const sectionId = feature.properties.id;
                         const displayId = extractSectionId(sectionId);
 
-                        L.marker([label[1], label[0]], {
+                        // 转换标签坐标
+                        const viewBox = geojsonData.metadata.viewBox
+                            .split(",")
+                            .map(Number);
+                        const minX = viewBox[0];
+                        const minY = viewBox[1];
+                        const width = viewBox[2];
+                        const height = viewBox[3];
+
+                        const labelX = minX + ((label[0] + 1) * width) / 2;
+                        const labelY = minY + ((1 - label[1]) * height) / 2;
+
+                        L.marker([labelY, labelX], {
                             icon: L.divIcon({
                                 className: "section-label",
                                 html: `<div style="
-                                            background: rgba(255,255,255,0.9);
-                                            border: 2px solid #3498db;
-                                            border-radius: 50%;
-                                            width: 40px;
-                                            height: 40px;
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: center;
-                                            font-weight: bold;
-                                            color: #2c3e50;
-                                            font-size: 12px;
-                                            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                                        ">${displayId}</div>`,
+                                    background: rgba(255,255,255,0.9);
+                                    border: 2px solid #3498db;
+                                    border-radius: 50%;
+                                    width: 40px;
+                                    height: 40px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-weight: bold;
+                                    color: #2c3e50;
+                                    font-size: 12px;
+                                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                                ">${displayId}</div>`,
                                 iconSize: [40, 40],
                                 iconAnchor: [20, 20],
                             }),
@@ -275,7 +338,9 @@ function hideTooltip() {
 
 // 重置视图
 function resetView() {
-    if (geojsonLayer) {
+    if (svgBounds) {
+        map.fitBounds(svgBounds);
+    } else if (geojsonLayer) {
         map.fitBounds(geojsonLayer.getBounds());
     }
 }
@@ -299,36 +364,8 @@ function toggleLabels() {
         });
 
         if (showLabels && geojsonLayer) {
-            geojsonLayer.eachLayer((layer) => {
-                const feature = layer.feature;
-                if (feature.properties.polylabel) {
-                    const label = feature.properties.polylabel[0];
-                    const sectionId = feature.properties.id;
-                    const displayId = extractSectionId(sectionId);
-
-                    L.marker([label[1], label[0]], {
-                        icon: L.divIcon({
-                            className: "section-label",
-                            html: `<div style="
-                                background: rgba(255,255,255,0.9);
-                                border: 2px solid #3498db;
-                                border-radius: 50%;
-                                width: 40px;
-                                height: 40px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                font-weight: bold;
-                                color: #2c3e50;
-                                font-size: 12px;
-                                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                            ">${displayId}</div>`,
-                            iconSize: [40, 40],
-                            iconAnchor: [20, 20],
-                        }),
-                    }).addTo(map);
-                }
-            });
+            // 重新加载GeoJSON来更新标签
+            loadGeoJSON();
         }
     }
 }
@@ -336,7 +373,15 @@ function toggleLabels() {
 // 切换SVG背景显示
 function toggleSVG() {
     showSVGBackground = !showSVGBackground;
-    loadSVGBackground();
+    // 重新加载地图
+    if (map) {
+        map.eachLayer((layer) => {
+            map.removeLayer(layer);
+        });
+
+        // 重新初始化地图
+        initMap();
+    }
 }
 
 // 页面加载完成后初始化地图
