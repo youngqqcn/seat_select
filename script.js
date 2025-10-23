@@ -41,11 +41,8 @@ fetch("section-data.json")
               `;
                             tooltip.classList.add("show");
 
-                            // 更新工具提示位置
-                            const rect = path.getBoundingClientRect();
-                            tooltip.style.left =
-                                rect.left + rect.width / 2 - 110 + "px";
-                            tooltip.style.top = rect.top - 60 + "px";
+                            // 立即更新工具提示位置到鼠标位置
+                            updateTooltipPosition(e);
                         }
                     });
 
@@ -55,11 +52,9 @@ fetch("section-data.json")
                         tooltip.classList.remove("show");
                     });
 
-                    // 鼠标移动时更新工具提示位置
+                    // 鼠标移动时实时更新工具提示位置
                     path.addEventListener("mousemove", (e) => {
-                        // 更新工具提示位置
-                        tooltip.style.left = e.clientX + 20 + "px";
-                        tooltip.style.top = e.clientY - 70 + "px";
+                        updateTooltipPosition(e);
                     });
 
                     // 为路径添加点击事件
@@ -103,6 +98,49 @@ fetch("section-data.json")
                     });
                 }
             });
+
+            // 工具提示位置更新函数
+            function updateTooltipPosition(e) {
+                // 获取鼠标在页面中的位置
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+
+                // 获取窗口尺寸
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+
+                // 获取工具提示尺寸
+                const tooltipWidth = tooltip.offsetWidth || 200;
+                const tooltipHeight = tooltip.offsetHeight || 100;
+
+                // 计算最佳位置（鼠标右下方15px，并向右移动100px）
+                let left = mouseX + 180; // 向右移动100px
+                let top = mouseY + 1;
+
+                // 检查右侧边界
+                if (left + tooltipWidth > windowWidth) {
+                    left = mouseX - tooltipWidth - 15;
+                }
+
+                // 检查左侧边界
+                if (left < 0) {
+                    left = 15;
+                }
+
+                // 检查底部边界
+                if (top + tooltipHeight > windowHeight) {
+                    top = mouseY - tooltipHeight - 15;
+                }
+
+                // 检查顶部边界
+                if (top < 0) {
+                    top = 15;
+                }
+
+                // 更新工具提示位置
+                tooltip.style.left = left + "px";
+                tooltip.style.top = top + "px";
+            }
         });
     })
     .catch((error) => {

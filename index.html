@@ -122,25 +122,66 @@
                 }
             }
 
-            /* 工具提示样式 */
+            /* 工具提示样式 - 优化位置跟随 */
             .tooltip {
-                position: absolute;
-                background: rgba(0, 0, 0, 0.85);
-                color: white;
-                padding: 8px 12px;
-                border-radius: 6px;
+                position: fixed; /* 使用fixed定位跟随鼠标 */
+                background: rgba(26, 26, 26, 0.95);
+                color: rgb(248, 245, 245);
+                padding: 12px 16px;
+                border-radius: 10px;
                 font-size: 14px;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity 0.3s ease;
-                z-index: 1000;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-                max-width: 200px;
+                transition: opacity 0.15s ease, transform 0.15s ease;
+                z-index: 10000; /* 确保在最顶层 */
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+                max-width: 240px;
                 text-align: center;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                transform: translateZ(0); /* 硬件加速 */
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.4;
             }
 
             .tooltip.show {
                 opacity: 1;
+                transform: scale(1) translateZ(0);
+            }
+
+            /* 工具提示箭头 */
+            /* .tooltip::before {
+                content: "";
+                position: absolute;
+                top: -8px;
+                left: 50%;
+                margin-left: -8px;
+                border-width: 0 8px 8px 8px;
+                border-style: solid;
+                border-color: transparent transparent rgba(0, 0, 0, 0.95)
+                    transparent;
+            }
+
+            /* 当工具提示在鼠标上方时调整箭头位置 */
+            /* .tooltip.top-position::before {
+                top: auto;
+                bottom: -8px;
+                border-width: 8px 8px 0 8px;
+                border-color: rgba(0, 0, 0, 0.95) transparent transparent
+                    transparent;
+            } */ 
+
+            /* 工具提示内容样式 */
+            .tooltip strong {
+                color: #ffd700;
+                font-size: 15px;
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .tooltip br {
+                margin: 3px 0;
             }
 
             #section-detail {
