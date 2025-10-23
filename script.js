@@ -35,6 +35,9 @@ fetch("section-data.json")
                         path.style.stroke = "#da00f7ff";
                         path.style.strokeWidth = "11";
 
+                        // 将文字加粗
+                        textElement.style.fontWeight = "bold";
+
                         // 显示工具提示
                         const detail = data[sectionId];
                         if (detail) {
@@ -61,10 +64,12 @@ fetch("section-data.json")
                             path.classList.add("selected");
                             path.style.stroke = "#ff0000";
                             path.style.strokeWidth = "11";
+                            textElement.style.fontWeight = "bold";
                             return;
                         } else {
                             path.style.stroke = path_stoke_bak;
                             path.style.strokeWidth = path_stokeWidth_bak;
+                            textElement.style.fontWeight = "normal";
                         }
                     });
 
@@ -82,12 +87,15 @@ fetch("section-data.json")
 
                             currentSelected.style.stroke = "";
                             currentSelected.style.strokeWidth = "";
+                            y;
+                            textElement.style.fontWeight = "normal";
                         }
 
                         // 为当前点击的区域添加选中样式
                         path.classList.add("selected");
                         path.style.stroke = "#ff0000";
                         path.style.strokeWidth = "11";
+                        textElement.style.fontWeight = "bold";
                         currentSelected = path;
 
                         // 隐藏工具提示
