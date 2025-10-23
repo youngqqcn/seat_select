@@ -41,8 +41,9 @@ fetch("section-data.json")
                         // 显示工具提示
                         const detail = data[sectionId];
                         if (detail) {
-                            tooltip.innerHTML = `
-                <strong>区域 ${sectionId}</strong><br>
+                            // 提示框内的文字左对齐
+                            tooltip.innerHTML = `<div style="text-align: left;">
+                <strong>${sectionId}</strong>
                 排数: ${detail.row}<br>
                 价格: ${detail.price}<br>
                 余票: ${detail.ticketCount}张
