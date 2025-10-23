@@ -22,13 +22,11 @@ fetch("section-data.json")
                     path.addEventListener("click", () => {
                         // 移除之前选中的区域的外边框
                         if (currentSelected) {
-                            currentSelected.style.stroke = "";
-                            currentSelected.style.strokeWidth = "";
+                            currentSelected.classList.remove("selected");
                         }
 
                         // 为当前点击的区域添加选中样式
-                        path.style.stroke = "#ff0000";
-                        path.style.strokeWidth = "3";
+                        path.classList.add("selected");
                         currentSelected = path;
 
                         // 3. 从JSON中读取区域详情并渲染
@@ -38,10 +36,10 @@ fetch("section-data.json")
                                 "section-detail"
                             ).innerHTML = `
                 <h3>区域：${sectionId}</h3>
-                <p>排数：${detail.row}</p>
-                <p>价格：${detail.price}</p>
-                <p>余票：${detail.ticketCount} 张</p>
-                <p>描述：${detail.description}</p>
+                <p><strong>排数：</strong>${detail.row}</p>
+                <p><strong>价格：</strong><span style="color: #e74c3c; font-weight: bold;">${detail.price}</span></p>
+                <p><strong>余票：</strong>${detail.ticketCount} 张</p>
+                <p><strong>描述：</strong>${detail.description}</p>
               `;
                         } else {
                             document.getElementById(
@@ -55,15 +53,11 @@ fetch("section-data.json")
 
                     // 添加hover效果
                     path.addEventListener("mouseenter", () => {
-                        path.style.stroke = "#333";
-                        path.style.strokeWidth = "3";
+                        path.classList.add("hover");
                     });
 
                     path.addEventListener("mouseleave", () => {
-                        if (path !== currentSelected) {
-                            path.style.stroke = "";
-                            path.style.strokeWidth = "";
-                        }
+                        path.classList.remove("hover");
                     });
                 }
             });
