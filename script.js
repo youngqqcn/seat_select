@@ -65,12 +65,12 @@ fetch("section-data.json")
                             path.classList.add("selected");
                             path.style.stroke = "#ff0000";
                             path.style.strokeWidth = "11";
-                            textElement.style.fontWeight = "bold";
+                            path.previousElementSibling.style.fontWeight = "bold";
                             return;
                         } else {
                             path.style.stroke = path_stoke_bak;
                             path.style.strokeWidth = path_stokeWidth_bak;
-                            textElement.style.fontWeight = "normal";
+                            path.previousElementSibling.style.fontWeight = "normal";
                         }
                     });
 
@@ -88,14 +88,15 @@ fetch("section-data.json")
 
                             currentSelected.style.stroke = "";
                             currentSelected.style.strokeWidth = "";
-                            textElement.style.fontWeight = "normal";
+                            currentSelected.style.fontWeight = "normal";
+                            currentSelected.previousElementSibling.style.fontWeight = "normal";
                         }
 
                         // 为当前点击的区域添加选中样式
                         path.classList.add("selected");
                         path.style.stroke = "#ff0000";
                         path.style.strokeWidth = "11";
-                        textElement.style.fontWeight = "bold";
+                        path.previousElementSibling.style.fontWeight = "bold";
                         currentSelected = path;
 
                         // 隐藏工具提示
