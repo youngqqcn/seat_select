@@ -4,6 +4,8 @@ let geojsonLayer;
 let sectionData = {};
 let selectedSection = null;
 let showLabels = true;
+let svgLayer = null;
+let showSVGBackground = true;
 
 // 初始化地图
 function initMap() {
@@ -24,8 +26,48 @@ function initMap() {
         })
         .addTo(map);
 
+    // 加载SVG背景
+    loadSVGBackground();
+
     // 加载区域数据
     loadSectionData();
+}
+
+// 加载SVG背景
+function loadSVGBackground() {
+    if (!showSVGBackground) {
+        if (svgLayer) {
+            map.removeLayer(svgLayer);
+            svgLayer = null;
+        }
+        return;
+    }
+
+    // 获取SVG图片的尺寸信息
+    fetch("657537.geojson")
+        .then((response) => response.json())
+        .then((geojsonData) => {
+            const viewBox = geojsonData.metadata.viewBox.split(",").map(Number);
+            const bounds = L.latLngBounds(
+                [viewBox[1], viewBox[0]], // 西南角
+                [viewBox[1] + viewBox[3], viewBox[0] + viewBox[2]] // 东北角
+            );
+
+            // 创建SVG图片图层
+            svgLayer = L.imageOverlay("657537.min.svg", bounds, {
+                opacity: 0.8,
+                interactive: false,
+            }).addTo(map);
+
+            // 设置地图边界
+            map.setMaxBounds(bounds);
+            map.fitBounds(bounds);
+        })
+        .catch((error) => {
+            console.error("加载SVG背景失败:", error);
+            // 即使SVG加载失败，也继续加载GeoJSON
+            loadSectionData();
+        });
 }
 
 // 加载区域数据
@@ -48,16 +90,18 @@ function loadGeoJSON() {
     fetch("657537.geojson")
         .then((response) => response.json())
         .then((geojsonData) => {
-            // 获取视图边界
+            // 获取视图边界（如果SVG加载失败，这里会重新设置边界）
             const viewBox = geojsonData.metadata.viewBox.split(",").map(Number);
             const bounds = L.latLngBounds(
                 [viewBox[1], viewBox[0]], // 西南角
                 [viewBox[1] + viewBox[3], viewBox[0] + viewBox[2]] // 东北角
             );
 
-            // 设置地图边界
-            map.setMaxBounds(bounds);
-            map.fitBounds(bounds);
+            // 如果SVG背景没有加载，设置地图边界
+            if (!svgLayer) {
+                map.setMaxBounds(bounds);
+                map.fitBounds(bounds);
+            }
 
             // 创建GeoJSON图层
             geojsonLayer = L.geoJSON(geojsonData.sources.section, {
@@ -205,11 +249,11 @@ function showTooltip(event, sectionId, detail) {
     const tooltip = document.createElement("div");
     tooltip.className = "tooltip";
     tooltip.innerHTML = `
-                <strong>区域 ${sectionId}</strong><br>
-                排数: ${detail.row || "未知"}<br>
-                价格: ${detail.price || "未知"}<br>
-                余票: ${detail.ticketCount || 0}张
-            `;
+        <strong>区域 ${sectionId}</strong><br>
+        排数: ${detail.row || "未知"}<br>
+        价格: ${detail.price || "未知"}<br>
+        余票: ${detail.ticketCount || 0}张
+    `;
 
     tooltip.style.position = "fixed";
     tooltip.style.left = event.clientX + 10 + "px";
@@ -239,9 +283,7 @@ function resetView() {
 // 适应区域
 function fitToSections() {
     if (geojsonLayer) {
-        map.fitBounds(geojsonLayer.getBounds(), {
-            padding: [20, 20],
-        });
+        map.fitBounds(geojsonLayer.getBounds(), { padding: [20, 20] });
     }
 }
 
@@ -268,19 +310,19 @@ function toggleLabels() {
                         icon: L.divIcon({
                             className: "section-label",
                             html: `<div style="
-                                        background: rgba(255,255,255,0.9);
-                                        border: 2px solid #3498db;
-                                        border-radius: 50%;
-                                        width: 40px;
-                                        height: 40px;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        font-weight: bold;
-                                        color: #2c3e50;
-                                        font-size: 12px;
-                                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                                    ">${displayId}</div>`,
+                                background: rgba(255,255,255,0.9);
+                                border: 2px solid #3498db;
+                                border-radius: 50%;
+                                width: 40px;
+                                height: 40px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: bold;
+                                color: #2c3e50;
+                                font-size: 12px;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                            ">${displayId}</div>`,
                             iconSize: [40, 40],
                             iconAnchor: [20, 20],
                         }),
@@ -289,6 +331,12 @@ function toggleLabels() {
             });
         }
     }
+}
+
+// 切换SVG背景显示
+function toggleSVG() {
+    showSVGBackground = !showSVGBackground;
+    loadSVGBackground();
 }
 
 // 页面加载完成后初始化地图
