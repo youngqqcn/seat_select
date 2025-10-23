@@ -25,10 +25,15 @@ fetch("section-data.json")
                     // 添加基础样式类
                     path.classList.add("section-path");
 
+                    path_stoke_bak = path.style.stroke;
+                    path_stokeWidth_bak = path.style.strokeWidth;
+
                     // 鼠标进入区域
                     path.addEventListener("mouseenter", (e) => {
                         // 添加hover类
                         path.classList.add("hover");
+                        path.style.stroke = "#da00f7ff";
+                        path.style.strokeWidth = "11";
 
                         // 显示工具提示
                         const detail = data[sectionId];
@@ -50,6 +55,17 @@ fetch("section-data.json")
                     path.addEventListener("mouseleave", () => {
                         path.classList.remove("hover");
                         tooltip.classList.remove("show");
+
+                        // 如果是点击选中的区域，则保持选中样式
+                        if (currentSelected === path) {
+                            path.classList.add("selected");
+                            path.style.stroke = "#ff0000";
+                            path.style.strokeWidth = "11";
+                            return;
+                        } else {
+                            path.style.stroke = path_stoke_bak;
+                            path.style.strokeWidth = path_stokeWidth_bak;
+                        }
                     });
 
                     // 鼠标移动时实时更新工具提示位置
