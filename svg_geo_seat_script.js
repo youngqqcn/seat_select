@@ -115,9 +115,9 @@ function loadGeoJSON() {
                     const relativeX = coord[0]; // -1到1
                     const relativeY = coord[1]; // -1到1
 
-                    // 将相对坐标转换为实际坐标
+                    // 将相对坐标转换为实际坐标 - 修复Y轴翻转问题
                     const actualX = minX + ((relativeX + 1) * width) / 2;
-                    const actualY = minY + ((1 - relativeY) * height) / 2;
+                    const actualY = minY + ((relativeY + 1) * height) / 2; // 移除1-relativeY的翻转
 
                     return [actualY, actualX]; // Leaflet使用[lat, lng]格式
                 });
@@ -143,7 +143,7 @@ function loadGeoJSON() {
                     return getSectionStyle(feature);
                 },
                 coordsToLatLng: function (coords) {
-                    // 转换单个坐标点
+                    // 转换单个坐标点 - 修复Y轴翻转问题
                     const relativeX = coords[0];
                     const relativeY = coords[1];
                     const viewBox = geojsonData.metadata.viewBox
@@ -155,7 +155,7 @@ function loadGeoJSON() {
                     const height = viewBox[3];
 
                     const actualX = minX + ((relativeX + 1) * width) / 2;
-                    const actualY = minY + ((1 - relativeY) * height) / 2;
+                    const actualY = minY + ((relativeY + 1) * height) / 2; // 移除1-relativeY的翻转
 
                     return L.latLng(actualY, actualX);
                 },
@@ -169,7 +169,7 @@ function loadGeoJSON() {
                         const sectionId = feature.properties.id;
                         const displayId = extractSectionId(sectionId);
 
-                        // 转换标签坐标
+                        // 转换标签坐标 - 修复Y轴翻转问题
                         const viewBox = geojsonData.metadata.viewBox
                             .split(",")
                             .map(Number);
@@ -179,7 +179,7 @@ function loadGeoJSON() {
                         const height = viewBox[3];
 
                         const labelX = minX + ((label[0] + 1) * width) / 2;
-                        const labelY = minY + ((1 - label[1]) * height) / 2;
+                        const labelY = minY + ((label[1] + 1) * height) / 2; // 移除1-label[1]的翻转
 
                         L.marker([labelY, labelX], {
                             icon: L.divIcon({
