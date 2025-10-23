@@ -1,0 +1,10 @@
+<svg id="venue-map" width="800" height="600">
+  <!-- 区域1 -->
+  <g id="section-209" data-section-id="section-209">
+    <path d="M100,100 L200,100 L200,200 L100,200 Z" fill="#ff0000" />
+  </g>
+  <!-- 区域2 -->
+  <g id="section-210" data-section-id="section-210">
+    <path d="M200,100 L300,100 L300,200 L200,200 Z" fill="#00ff00" />
+  </g>
+</svg>

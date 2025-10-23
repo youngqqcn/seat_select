@@ -1,0 +1,26 @@
+{
+    "Section-A": {
+        "row": "26",
+        "price": "¥1,267",
+        "ticketCount": 2,
+        "description": "CAT4"
+    },
+    "Section-B": {
+        "row": "25",
+        "price": "¥2,890",
+        "ticketCount": 5,
+        "description": "CAT3"
+    },
+    "Section-C": {
+        "row": "25",
+        "price": "¥3,890",
+        "ticketCount": 5,
+        "description": "CAT2"
+    },
+    "Section-D": {
+        "row": "25",
+        "price": "¥5,890",
+        "ticketCount": 5,
+        "description": "VVIP"
+    }
+}
