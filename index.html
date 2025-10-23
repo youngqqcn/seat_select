@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>选区域功能</title>
+        <title>选区域功能demo</title>
         <style>
             #venue-map {
                 cursor: pointer;
@@ -170,7 +170,7 @@
                 border-width: 8px 8px 0 8px;
                 border-color: rgba(0, 0, 0, 0.95) transparent transparent
                     transparent;
-            } */ 
+            } */
 
             /* 工具提示内容样式 */
             .tooltip strong {
@@ -204,7 +204,7 @@
             /* 页面整体样式 */
             body {
                 font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-                margin: 30px;
+                margin: 10px;
                 background: #ffffff;
                 min-height: 100vh;
                 padding: 20px;
@@ -213,7 +213,7 @@
 
             h3 {
                 color: #2c3e50;
-                margin-bottom: 15px;
+                margin-bottom: 10px;
                 font-size: 1.4em;
                 border-bottom: 2px solid #3498db;
                 padding-bottom: 8px;
@@ -241,7 +241,7 @@
                 text-align: center;
                 color: #2c3e50;
                 font-size: 2.2em;
-                margin-bottom: 30px;
+                margin-bottom: 20px;
                 font-weight: 300;
                 text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
             }
@@ -251,7 +251,7 @@
                 max-width: 1200px;
                 margin: 0 auto;
                 background: #ffffff;
-                padding: 30px;
+                padding: 20px;
                 border-radius: 12px;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             }
@@ -289,15 +289,17 @@
 
         <!-- 页面容器 -->
         <div class="container">
-            <h1 class="page-title">场馆座位选择系统</h1>
+            <h1 class="page-title">场馆选区demo</h1>
 
             <!-- 使用新的SVG文件 -->
+             <!-- 居中-->
             <object
                 id="venue-map"
                 data="657537.min.svg"
                 type="image/svg+xml"
                 width="800"
                 height="600"
+                style="display: block; margin: 0 auto;"
             ></object>
             <div id="section-detail">请点击地图上的区域查看详情</div>
         </div>

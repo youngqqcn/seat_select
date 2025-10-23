@@ -87,7 +87,6 @@ fetch("section-data.json")
 
                             currentSelected.style.stroke = "";
                             currentSelected.style.strokeWidth = "";
-                            y;
                             textElement.style.fontWeight = "normal";
                         }
 
@@ -143,7 +142,7 @@ fetch("section-data.json")
                 const tooltipHeight = tooltip.offsetHeight || 100;
 
                 // 计算最佳位置（鼠标右下方15px，并向右移动100px）
-                let left = mouseX + 180; // 向右移动100px
+                let left = mouseX + 240; // 向右移动100px
                 let top = mouseY + 1;
 
                 // 检查右侧边界
