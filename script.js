@@ -25,8 +25,11 @@ fetch("section-data.json")
                     // 添加基础样式类
                     path.classList.add("section-path");
 
-                    path_stoke_bak = path.style.stroke;
-                    path_stokeWidth_bak = path.style.strokeWidth;
+                    // 保存原始样式
+                    const path_stroke_bak = path.style.stroke;
+                    const path_strokeWidth_bak = path.style.strokeWidth;
+                    const path_fill_bak =
+                        path.getAttribute("fill") || path.style.fill;
 
                     // 鼠标进入区域
                     path.addEventListener("mouseenter", (e) => {
@@ -65,12 +68,21 @@ fetch("section-data.json")
                             path.classList.add("selected");
                             path.style.stroke = "#ff0000";
                             path.style.strokeWidth = "11";
-                            path.previousElementSibling.style.fontWeight = "bold";
+                            path.style.fill = "#ff0000";
+                            path.previousElementSibling.style.fontWeight =
+                                "bold";
                             return;
                         } else {
-                            path.style.stroke = path_stoke_bak;
-                            path.style.strokeWidth = path_stokeWidth_bak;
-                            path.previousElementSibling.style.fontWeight = "normal";
+                            // 恢复原始样式
+                            path.style.stroke = path_stroke_bak;
+                            path.style.strokeWidth = path_strokeWidth_bak;
+                            if (path_fill_bak) {
+                                path.style.fill = path_fill_bak;
+                            } else {
+                                path.removeAttribute("fill");
+                            }
+                            path.previousElementSibling.style.fontWeight =
+                                "normal";
                         }
                     });
 
@@ -81,21 +93,41 @@ fetch("section-data.json")
 
                     // 为路径添加点击事件
                     path.addEventListener("click", (e) => {
-                        // 移除之前选中的区域的外边框
+                        // 移除之前选中的区域的外边框和填充色
                         if (currentSelected) {
                             currentSelected.classList.remove("selected");
                             currentSelected.classList.remove("hover");
 
-                            currentSelected.style.stroke = "";
-                            currentSelected.style.strokeWidth = "";
-                            currentSelected.style.fontWeight = "normal";
-                            currentSelected.previousElementSibling.style.fontWeight = "normal";
+                            // 恢复之前选中区域的原始样式
+                            const prevPath_stroke_bak =
+                                currentSelected._stroke_bak;
+                            const prevPath_strokeWidth_bak =
+                                currentSelected._strokeWidth_bak;
+                            const prevPath_fill_bak = currentSelected._fill_bak;
+
+                            currentSelected.style.stroke =
+                                prevPath_stroke_bak || "";
+                            currentSelected.style.strokeWidth =
+                                prevPath_strokeWidth_bak || "";
+                            if (prevPath_fill_bak) {
+                                currentSelected.style.fill = prevPath_fill_bak;
+                            } else {
+                                currentSelected.removeAttribute("fill");
+                            }
+                            currentSelected.previousElementSibling.style.fontWeight =
+                                "normal";
                         }
 
-                        // 为当前点击的区域添加选中样式
+                        // 保存当前路径的原始样式
+                        path._stroke_bak = path_stroke_bak;
+                        path._strokeWidth_bak = path_strokeWidth_bak;
+                        path._fill_bak = path_fill_bak;
+
+                        // 为当前点击的区域添加选中样式 - 整个区域变红色
                         path.classList.add("selected");
                         path.style.stroke = "#ff0000";
                         path.style.strokeWidth = "11";
+                        path.style.fill = "#ff0000"; // 设置填充色为红色
                         path.previousElementSibling.style.fontWeight = "bold";
                         currentSelected = path;
 
@@ -205,6 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
     #venue-map path.selected {
       stroke: #ff0000 !important;
       stroke-width: 6 !important;
+      fill: #ff0000 !important; /* 强制设置选中区域的填充色为红色 */
       transform: scale(1.02) !important;
       filter: brightness(1.1) !important;
       fill-opacity: 0.7 !important;

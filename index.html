@@ -59,6 +59,7 @@
             #venue-map path.selected {
                 stroke: #ff0000 !important;
                 stroke-width: 6 !important;
+                fill: #ff0000 !important; /* 设置选中区域的填充色为红色 */
                 filter: drop-shadow(0 8px 16px rgba(255, 0, 0, 0.5))
                     brightness(1.1) !important;
                 transform: scale(1.02) !important;
@@ -292,14 +293,14 @@
             <h1 class="page-title">Tixflow场馆选区demo</h1>
 
             <!-- 使用新的SVG文件 -->
-             <!-- 居中-->
+            <!-- 居中-->
             <object
                 id="venue-map"
                 data="657537.min.svg"
                 type="image/svg+xml"
                 width="800"
                 height="600"
-                style="display: block; margin: 0 auto;"
+                style="display: block; margin: 0 auto"
             ></object>
             <div id="section-detail">请点击地图上的区域查看详情</div>
         </div>
