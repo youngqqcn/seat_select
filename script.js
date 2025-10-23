@@ -19,8 +19,15 @@ fetch("section-data.json")
                 if (textElement && textElement.tagName === "text") {
                     const sectionId = textElement.textContent.trim();
 
+                    // 移除内联样式，让CSS生效
+                    path.removeAttribute("style");
+
+                    // 添加基础样式类
+                    path.classList.add("section-path");
+
                     // 鼠标进入区域
                     path.addEventListener("mouseenter", (e) => {
+                        // 添加hover类
                         path.classList.add("hover");
 
                         // 显示工具提示
@@ -36,10 +43,9 @@ fetch("section-data.json")
 
                             // 更新工具提示位置
                             const rect = path.getBoundingClientRect();
-                            const svgRect = svgObject.getBoundingClientRect();
                             tooltip.style.left =
-                                rect.left + rect.width / 2 - 100 + "px";
-                            tooltip.style.top = rect.top - 50 + "px";
+                                rect.left + rect.width / 2 - 110 + "px";
+                            tooltip.style.top = rect.top - 60 + "px";
                         }
                     });
 
@@ -51,10 +57,9 @@ fetch("section-data.json")
 
                     // 鼠标移动时更新工具提示位置
                     path.addEventListener("mousemove", (e) => {
-                        const rect = path.getBoundingClientRect();
-                        const svgRect = svgObject.getBoundingClientRect();
-                        tooltip.style.left = e.clientX + 15 + "px";
-                        tooltip.style.top = e.clientY - 50 + "px";
+                        // 更新工具提示位置
+                        tooltip.style.left = e.clientX + 20 + "px";
+                        tooltip.style.top = e.clientY - 70 + "px";
                     });
 
                     // 为路径添加点击事件
@@ -62,6 +67,7 @@ fetch("section-data.json")
                         // 移除之前选中的区域的外边框
                         if (currentSelected) {
                             currentSelected.classList.remove("selected");
+                            currentSelected.classList.remove("hover");
                         }
 
                         // 为当前点击的区域添加选中样式
@@ -106,3 +112,35 @@ fetch("section-data.json")
       <p>无法加载区域数据，请检查网络连接</p>
     `;
     });
+
+// 添加额外的样式增强
+document.addEventListener("DOMContentLoaded", function () {
+    // 确保SVG加载后应用样式
+    const style = document.createElement("style");
+    style.textContent = `
+    /* 确保SVG路径样式正确应用 */
+    #venue-map path {
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+      cursor: pointer !important;
+    }
+
+    /* 强制应用hover效果 */
+    #venue-map path:hover {
+      stroke: url(#hoverGradient) !important;
+      stroke-width: 5 !important;
+      transform: scale(1.03) !important;
+      filter: brightness(1.15) saturate(1.3) !important;
+      fill-opacity: 0.6 !important;
+    }
+
+    /* 强制应用选中效果 */
+    #venue-map path.selected {
+      stroke: #ff0000 !important;
+      stroke-width: 6 !important;
+      transform: scale(1.02) !important;
+      filter: brightness(1.1) !important;
+      fill-opacity: 0.7 !important;
+    }
+  `;
+    document.head.appendChild(style);
+});
