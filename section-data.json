@@ -17,6 +17,18 @@
         "ticketCount": 50,
         "description": "General Admission"
     },
+    "PALCO":{
+        "row": "27",
+        "price": "¥15,500",
+        "ticketCount": 10,
+        "description": "PALCO Seats"
+    },
+    "PRENSA": {
+        "row": "31",
+        "price": "¥15,500",
+        "ticketCount": 5,
+        "description": "PRENSA Seats"
+    },
     "101": {
         "row": "26",
         "price": "¥1,267",
