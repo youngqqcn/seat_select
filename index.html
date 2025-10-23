@@ -11,7 +11,7 @@
                 stroke-width: 3;
             }
             #venue-map g.selected {
-                stroke: #f78e8e;
+                stroke: #ff0000;
                 stroke-width: 3;
             }
             #venue-map g:active {
@@ -25,76 +25,14 @@
         </style>
     </head>
     <body>
-        <svg id="venue-map" width="800" height="600">
-            <!-- 区域1 -->
-            <g id="Section-A" data-section-id="Section-A">
-                <path
-                    d="M100,100 L190,100 L190,190 L100,190 Z"
-                    fill="#d080d0"
-                />
-                <!-- 添加文字 -->
-                <text
-                    x="145"
-                    y="145"
-                    font-size="20"
-                    fill="#000000"
-                    text-anchor="middle"
-                >
-                    Section-A
-                </text>
-            </g>
-            <!-- 区域2 -->
-            <g id="Section-B" data-section-id="Section-B">
-                <path
-                    d="M210,100 L300,100 L300,190 L210,190 Z"
-                    fill="#80a0a0"
-                />
-                <!-- 添加文字 -->
-                <text
-                    x="255"
-                    y="145"
-                    font-size="20"
-                    fill="#000000"
-                    text-anchor="middle"
-                >
-                    Section-B
-                </text>
-            </g>
-            <!-- 区域3 -->
-            <g id="Section-C" data-section-id="Section-C">
-                <path
-                    d="M100,210 L190,210 L190,300 L100,300 Z"
-                    fill="#a0a0d0"
-                />
-                <!-- 添加文字 -->
-                <text
-                    x="145"
-                    y="255"
-                    font-size="20"
-                    fill="#000000"
-                    text-anchor="middle"
-                >
-                    Section-C
-                </text>
-            </g>
-            <!-- 区域4 -->
-            <g id="Section-D" data-section-id="Section-D">
-                <path
-                    d="M210,210 L300,210 L300,300 L210,300 Z"
-                    fill="#a0d0a0"
-                />
-                <!-- 添加文字 -->
-                <text
-                    x="255"
-                    y="255"
-                    font-size="20"
-                    fill="#000000"
-                    text-anchor="middle"
-                >
-                    Section-D
-                </text>
-            </g>
-        </svg>
+        <!-- 使用新的SVG文件 -->
+        <object
+            id="venue-map"
+            data="657537.min.svg"
+            type="image/svg+xml"
+            width="800"
+            height="600"
+        ></object>
         <div id="section-detail">请点击地图上的区域查看详情</div>
 
         <script src="script.js"></script>

@@ -1,26 +1,92 @@
 {
-    "Section-A": {
+    "101": {
         "row": "26",
         "price": "¥1,267",
         "ticketCount": 2,
         "description": "CAT4"
     },
-    "Section-B": {
+    "102": {
         "row": "25",
         "price": "¥2,890",
         "ticketCount": 5,
         "description": "CAT3"
     },
-    "Section-C": {
+    "103": {
         "row": "25",
         "price": "¥3,890",
         "ticketCount": 5,
         "description": "CAT2"
     },
-    "Section-D": {
+    "104": {
         "row": "25",
         "price": "¥5,890",
         "ticketCount": 5,
         "description": "VVIP"
+    },
+    "105": {
+        "row": "24",
+        "price": "¥4,890",
+        "ticketCount": 3,
+        "description": "CAT1"
+    },
+    "106": {
+        "row": "23",
+        "price": "¥3,890",
+        "ticketCount": 4,
+        "description": "CAT2"
+    },
+    "107": {
+        "row": "22",
+        "price": "¥2,890",
+        "ticketCount": 6,
+        "description": "CAT3"
+    },
+    "108": {
+        "row": "21",
+        "price": "¥1,890",
+        "ticketCount": 8,
+        "description": "CAT4"
+    },
+    "201": {
+        "row": "20",
+        "price": "¥1,267",
+        "ticketCount": 2,
+        "description": "CAT4"
+    },
+    "202": {
+        "row": "19",
+        "price": "¥2,890",
+        "ticketCount": 5,
+        "description": "CAT3"
+    },
+    "203": {
+        "row": "18",
+        "price": "¥3,890",
+        "ticketCount": 5,
+        "description": "CAT2"
+    },
+    "301": {
+        "row": "17",
+        "price": "¥5,890",
+        "ticketCount": 5,
+        "description": "VVIP"
+    },
+    "302": {
+        "row": "16",
+        "price": "¥4,890",
+        "ticketCount": 3,
+        "description": "CAT1"
+    },
+    "303": {
+        "row": "15",
+        "price": "¥3,890",
+        "ticketCount": 4,
+        "description": "CAT2"
+    },
+    "304": {
+        "row": "14",
+        "price": "¥2,890",
+        "ticketCount": 6,
+        "description": "CAT3"
     }
 }
