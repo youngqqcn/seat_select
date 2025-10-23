@@ -63,10 +63,15 @@ fetch("section-data.json")
                         if (currentSelected) {
                             currentSelected.classList.remove("selected");
                             currentSelected.classList.remove("hover");
+
+                            currentSelected.style.stroke = "";
+                            currentSelected.style.strokeWidth = "";
                         }
 
                         // 为当前点击的区域添加选中样式
                         path.classList.add("selected");
+                        path.style.stroke = "#ff0000";
+                        path.style.strokeWidth = "11";
                         currentSelected = path;
 
                         // 隐藏工具提示
