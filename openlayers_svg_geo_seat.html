@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>OpenLayers场馆区域选择</title>
+
+        <!-- OpenLayers CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.2.4/ol.css">
+
+        <style>
+            body {
+                margin: 0;
+                padding: 20px;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: #f8f9fa;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                padding: 20px;
+            }
+
+            .page-title {
+                text-align: center;
+                color: #2c3e50;
+                font-size: 2.2em;
+                margin-bottom: 20px;
+                font-weight: 300;
+            }
+
+            #map-container {
+                position: relative;
+                height: 600px;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+
+            #map {
+                height: 100%;
+                width: 100%;
+            }
+
+            #section-detail {
+                margin-top: 20px;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s ease;
+                min-height: 120px;
+            }
+
+            #section-detail:hover {
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+                transform: translateY(-3px);
+            }
+
+            h3 {
+                color: #2c3e50;
+                margin-bottom: 10px;
+                font-size: 1.4em;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 8px;
+            }
+
+            p {
+                margin: 8px 0;
+                color: #34495e;
+                font-size: 1.1em;
+            }
+
+            .price-highlight {
+                color: #e74c3c;
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+
+            .controls {
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .control-btn {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                margin: 0 5px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+
+            .control-btn:hover {
+                background: #2980b9;
+            }
+
+            .legend {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                background: white;
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                margin: 5px 0;
+            }
+
+            .legend-color {
+                width: 20px;
+                height: 20px;
+                margin-right: 8px;
+                border-radius: 3px;
+            }
+
+            /* OpenLayers 样式覆盖 */
+            .ol-zoom {
+                left: auto;
+                right: 8px;
+                top: 8px;
+            }
+
+            .section-label {
+                background: rgba(255,255,255,0.9);
+                border: 2px solid #3498db;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                color: #2c3e50;
+                font-size: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                pointer-events: none;
+            }
+
+            .selected-section {
+                stroke: #ff0000 !important;
+                stroke-width: 4 !important;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    stroke-width: 4;
+                }
+                50% {
+                    stroke-width: 6;
+                }
+                100% {
+                    stroke-width: 4;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="page-title">OpenLayers场馆区域选择demo</h1>
+
+            <div class="controls">
+                <button class="control-btn" onclick="resetView()">
+                    重置视图
+                </button>
+                <button class="control-btn" onclick="fitToSections()">
+                    适应区域
+                </button>
+                <button class="control-btn" onclick="toggleLabels()">
+                    切换标签
+                </button>
+                <button class="control-btn" onclick="toggleSVG()">
+                    切换SVG背景
+                </button>
+            </div>
+
+            <div id="map-container">
+                <div id="map"></div>
+            </div>
+
+            <div id="section-detail">
+                <h3>区域详情</h3>
+                <p>请点击地图上的区域查看详情</p>
+            </div>
+        </div>
+
+        <!-- OpenLayers JS -->
+        <script src="https://cdn.jsdelivr.net/npm/ol@v9.2.4/dist/ol.js"></script>
+        <script src="openlayers_svg_geo_seat_script.js"></script>
+    </body>
+</html>
