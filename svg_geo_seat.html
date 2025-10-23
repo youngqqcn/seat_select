@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Leaflet场馆区域选择</title>
+
+        <!-- Leaflet CSS -->
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
+
+        <style>
+            body {
+                margin: 0;
+                padding: 20px;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: #f8f9fa;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                padding: 20px;
+            }
+
+            .page-title {
+                text-align: center;
+                color: #2c3e50;
+                font-size: 2.2em;
+                margin-bottom: 20px;
+                font-weight: 300;
+            }
+
+            #map-container {
+                position: relative;
+                height: 600px;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+
+            #map {
+                height: 100%;
+                width: 100%;
+            }
+
+            #section-detail {
+                margin-top: 20px;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s ease;
+                min-height: 120px;
+            }
+
+            #section-detail:hover {
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+                transform: translateY(-3px);
+            }
+
+            h3 {
+                color: #2c3e50;
+                margin-bottom: 10px;
+                font-size: 1.4em;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 8px;
+            }
+
+            p {
+                margin: 8px 0;
+                color: #34495e;
+                font-size: 1.1em;
+            }
+
+            .price-highlight {
+                color: #e74c3c;
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+
+            .controls {
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .control-btn {
+                background: #3498db;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                margin: 0 5px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+
+            .control-btn:hover {
+                background: #2980b9;
+            }
+
+            .legend {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                background: white;
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                margin: 5px 0;
+            }
+
+            .legend-color {
+                width: 20px;
+                height: 20px;
+                margin-right: 8px;
+                border-radius: 3px;
+            }
+
+            /* Leaflet 样式覆盖 */
+            .leaflet-interactive {
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+
+            .leaflet-interactive:hover {
+                filter: brightness(1.15);
+                stroke-width: 3;
+            }
+
+            .selected-section {
+                filter: brightness(1.2);
+                stroke: #ff0000 !important;
+                stroke-width: 4 !important;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    stroke-width: 4;
+                }
+                50% {
+                    stroke-width: 6;
+                }
+                100% {
+                    stroke-width: 4;
+                }
+            }
+
+            .tooltip {
+                background: rgba(26, 26, 26, 0.95);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 14px;
+                pointer-events: none;
+                z-index: 1000;
+                max-width: 200px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="page-title">Leaflet场馆区域选择demo</h1>
+
+            <div class="controls">
+                <button class="control-btn" onclick="resetView()">
+                    重置视图
+                </button>
+                <button class="control-btn" onclick="fitToSections()">
+                    适应区域
+                </button>
+                <button class="control-btn" onclick="toggleLabels()">
+                    切换标签
+                </button>
+            </div>
+
+            <div id="map-container">
+                <div id="map"></div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div
+                            class="legend-color"
+                            style="background: #3388ff"
+                        ></div>
+                        <span>普通区域</span>
+                    </div>
+                    <div class="legend-item">
+                        <div
+                            class="legend-color"
+                            style="background: #ff6b35"
+                        ></div>
+                        <span>悬停区域</span>
+                    </div>
+                    <div class="legend-item">
+                        <div
+                            class="legend-color"
+                            style="background: #ff0000"
+                        ></div>
+                        <span>选中区域</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-detail">
+                <h3>区域信息</h3>
+                <p>请点击地图上的区域查看详情</p>
+            </div>
+        </div>
+
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <!-- 引入 svg_geo_seat_script.js     -->
+        <script src="svg_geo_seat_script.js"></script>
+    </body>
+</html>
